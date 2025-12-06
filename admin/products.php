@@ -78,11 +78,6 @@ if (isset($_POST['action']) && ($_POST['action'] === 'add_to_cart' || $_POST['ac
 
                     <div class="product-info">
                         <h2 class="product-title"><?php echo clean($product['product_name']); ?></h2>
-
-                        <p class="product-description">
-                            <?php echo nl2br(clean($product['description'])); ?>
-                        </p>
-
                         <p class="price-text">
                             PHP <?php echo number_format($product['price'], 0); ?>/kg
                         </p>
