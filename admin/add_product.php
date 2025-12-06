@@ -192,15 +192,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div class="form-group">
-                    <label>Price (PHP/kg) *</label>
+                    <label>Price</label>
                     <input type="number" step="0.01" name="price" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Stock (kg) *</label>
+                    <label>Stock</label>
                     <input type="number" name="stock_quantity" min="0" required>
                 </div>
-
                 <div class="form-group">
                     <label>Product Image *</label>
                     <input type="file" name="product_image" accept="image/*" required>

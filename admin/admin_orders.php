@@ -5,31 +5,33 @@ require_once 'admin_functions.php';
 
 requireAdmin();
 
-// Ensure 'paid' and 'picked_up' columns exist in orders table (safe migration)
 try {
-    $colPaid = $pdo->query("SHOW COLUMNS FROM orders LIKE 'paid'")->fetch();
-    $colPicked = $pdo->query("SHOW COLUMNS FROM orders LIKE 'picked_up'")->fetch();
-    if (!$colPaid || !$colPicked) {
-        // add missing columns (both optional)
-        $alterSql = [];
-        if (!$colPaid) $alterSql[] = "ADD COLUMN paid TINYINT(1) NOT NULL DEFAULT 0";
-        if (!$colPicked) $alterSql[] = "ADD COLUMN picked_up TINYINT(1) NOT NULL DEFAULT 0";
-        if (!empty($alterSql)) {
-            $pdo->exec('ALTER TABLE orders ' . implode(', ', $alterSql));
-        }
+    $cols = [
+        'paid' => $pdo->query("SHOW COLUMNS FROM orders LIKE 'paid'")->fetch(),
+        'picked_up' => $pdo->query("SHOW COLUMNS FROM orders LIKE 'picked_up'")->fetch(),
+        'paid_at' => $pdo->query("SHOW COLUMNS FROM orders LIKE 'paid_at'")->fetch(),
+        'picked_up_at' => $pdo->query("SHOW COLUMNS FROM orders LIKE 'picked_up_at'")->fetch(),
+    ];
+    $alterSql = [];
+    if (!$cols['paid']) $alterSql[] = "ADD COLUMN paid TINYINT(1) NOT NULL DEFAULT 0";
+    if (!$cols['picked_up']) $alterSql[] = "ADD COLUMN picked_up TINYINT(1) NOT NULL DEFAULT 0";
+    if (!$cols['paid_at']) $alterSql[] = "ADD COLUMN paid_at DATETIME NULL DEFAULT NULL";
+    if (!$cols['picked_up_at']) $alterSql[] = "ADD COLUMN picked_up_at DATETIME NULL DEFAULT NULL";
+    if (!empty($alterSql)) {
+        $pdo->exec('ALTER TABLE orders ' . implode(', ', $alterSql));
     }
 } catch (Exception $e) {
-    // ignore migration errors but log
     error_log('MIGRATE ORDERS COLUMNS ERROR: ' . $e->getMessage());
 }
 
-// Handle accept/decline
+// Handle accept/decline and toggles (paid/picked)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['action'])) {
     $orderId = (int)$_POST['order_id'];
     $action  = $_POST['action'];
 
-    if (!in_array($action, ['accepted','declined'], true)) {
-        // ignore unknown actions
+    // Allowed actions
+    $allowed = ['accepted','declined','mark_paid','mark_unpaid','mark_picked','mark_unpicked'];
+    if (!in_array($action, $allowed, true)) {
     } elseif ($action === 'accepted') {
         try {
             // Start transaction to validate and update stock atomically
@@ -77,13 +79,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['a
         $stmt = $pdo->prepare("UPDATE orders SET status = ?, notified = 0 WHERE order_id = ?");
         $stmt->execute(['declined', $orderId]);
         $message = "Order #{$orderId} has been declined.";
+    } elseif ($action === 'mark_paid' || $action === 'mark_unpaid' || $action === 'mark_picked' || $action === 'mark_unpicked') {
+        // Toggle paid / picked_up fields. Only allow toggling for accepted orders.
+        $orderRow = $pdo->prepare("SELECT status FROM orders WHERE order_id = ?");
+        $orderRow->execute([$orderId]);
+        $ord = $orderRow->fetch(PDO::FETCH_ASSOC);
+        if (!$ord) {
+            $message = "Order not found.";
+        } elseif ($ord['status'] !== 'accepted') {
+            $message = "Only accepted orders can be marked paid/picked.";
+        } else {
+            if ($action === 'mark_paid') {
+                $u = $pdo->prepare("UPDATE orders SET paid = 1, paid_at = NOW() WHERE order_id = ?");
+                $u->execute([$orderId]);
+                $message = "Order #{$orderId} marked as paid.";
+            } elseif ($action === 'mark_unpaid') {
+                $u = $pdo->prepare("UPDATE orders SET paid = 0, paid_at = NULL WHERE order_id = ?");
+                $u->execute([$orderId]);
+                $message = "Order #{$orderId} marked as unpaid.";
+            } elseif ($action === 'mark_picked') {
+                $u = $pdo->prepare("UPDATE orders SET picked_up = 1, picked_up_at = NOW() WHERE order_id = ?");
+                $u->execute([$orderId]);
+                $message = "Order #{$orderId} marked as picked up.";
+            } elseif ($action === 'mark_unpicked') {
+                $u = $pdo->prepare("UPDATE orders SET picked_up = 0, picked_up_at = NULL WHERE order_id = ?");
+                $u->execute([$orderId]);
+                $message = "Order #{$orderId} marked as not picked up.";
+            }
+        }
     }
 }
 
 _admin_orders_done:;
 
 // Fetch orders (non-admin users)
-$stmt = $pdo->query("
+$stmt = $pdo->query(" 
     SELECT o.*, u.username, u.first_name, u.last_name, u.address, u.phone
     FROM orders o
     JOIN users u ON u.user_id = o.user_id
@@ -136,6 +166,8 @@ $itemStmt = $pdo->prepare("
         <p style="color:green;"><?= clean($message); ?></p>
     <?php endif; ?>
 
+    
+
     <?php if (empty($orders)): ?>
         <p>No orders yet.</p>
     <?php else: ?>
@@ -148,7 +180,10 @@ $itemStmt = $pdo->prepare("
                 <th>Contact</th>
                 <th>Items</th>
                 <th>Total</th>
+                <th>Ordered At</th>
                 <th>Status</th>
+                <th>Paid</th>
+                <th>Picked Up</th>
                 <th>Action</th>
             </tr>
             </thead>
@@ -174,7 +209,62 @@ $itemStmt = $pdo->prepare("
                         <?php endif; ?>
                     </td>
                     <td>PHP<?= number_format($order['total_amount'], 2); ?></td>
+                    <td><?= date('Y-m-d H:i:s', strtotime($order['created_at'] ?? 'now')); ?></td>
                     <td class="status <?= clean($order['status']); ?>"><?= ucfirst(clean($order['status'])); ?></td>
+                    <td>
+                        <?php if ($order['status'] === 'accepted'): ?>
+                            <div style="display:flex;flex-direction:column;gap:6px;">
+                                <div>
+                                    <?= $order['paid'] ? '<span style="color:green; font-weight:600;">Yes</span>' : '<span style="color:#888;">No</span>'; ?>
+                                </div>
+                                <div>
+                                    <?php if ($order['paid']): ?>
+                                        <form method="POST" style="display:inline;">
+                                            <input type="hidden" name="order_id" value="<?= (int)$order['order_id']; ?>">
+                                            <button type="submit" name="action" value="mark_unpaid" class="btn">Mark Unpaid</button>
+                                        </form>
+                                    <?php else: ?>
+                                        <form method="POST" style="display:inline;">
+                                            <input type="hidden" name="order_id" value="<?= (int)$order['order_id']; ?>">
+                                            <button type="submit" name="action" value="mark_paid" class="btn btn-accept">Mark Paid</button>
+                                        </form>
+                                    <?php endif; ?>
+                                </div>
+                                <?php if (!empty($order['paid_at'])): ?>
+                                    <small style="color:#666;"><?= date('Y-m-d H:i', strtotime($order['paid_at'])); ?></small>
+                                <?php endif; ?>
+                            </div>
+                        <?php else: ?>
+                            —
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <?php if ($order['status'] === 'accepted'): ?>
+                            <div style="display:flex;flex-direction:column;gap:6px;">
+                                <div>
+                                    <?= $order['picked_up'] ? '<span style="color:green; font-weight:600;">Yes</span>' : '<span style="color:#888;">No</span>'; ?>
+                                </div>
+                                <div>
+                                    <?php if ($order['picked_up']): ?>
+                                        <form method="POST" style="display:inline;">
+                                            <input type="hidden" name="order_id" value="<?= (int)$order['order_id']; ?>">
+                                            <button type="submit" name="action" value="mark_unpicked" class="btn">Mark Not Picked</button>
+                                        </form>
+                                    <?php else: ?>
+                                        <form method="POST" style="display:inline;">
+                                            <input type="hidden" name="order_id" value="<?= (int)$order['order_id']; ?>">
+                                            <button type="submit" name="action" value="mark_picked" class="btn btn-accept">Mark Picked</button>
+                                        </form>
+                                    <?php endif; ?>
+                                </div>
+                                <?php if (!empty($order['picked_up_at'])): ?>
+                                    <small style="color:#666;"><?= date('Y-m-d H:i', strtotime($order['picked_up_at'])); ?></small>
+                                <?php endif; ?>
+                            </div>
+                        <?php else: ?>
+                            —
+                        <?php endif; ?>
+                    </td>
                     <td>
                         <?php if ($order['status'] === 'pending'): ?>
                             <form method="POST" style="display:inline;">

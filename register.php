@@ -17,7 +17,7 @@ if (isLoggedIn()) {
 </head>
 <body>
     <header>
-        <a href="home.php" class="logo">Thoto & Nene Fresh Live Tilapia and Bangus</a>
+        <a href="home.php" class="logo">CYCRIDE</a>
         
         <div class="hamburger" id="hamburger">
             <span></span>
@@ -51,6 +51,7 @@ if (isLoggedIn()) {
             <input type="text" id="firstName" placeholder="First Name" required>
             <input type="text" id="lastName" placeholder="Last Name" required>
             <input type="tel" id="phone" placeholder="Phone Number" required>
+            <input type="text" id="address" placeholder="Address" required>
             <input type="email" id="email" placeholder="Email Address" required>
             <input type="text" id="registerUsername" placeholder="Username" required>
             <input type="password" id="registerPassword" placeholder="Password" required minlength="6">
@@ -71,6 +72,7 @@ if (isLoggedIn()) {
             formData.append('firstName', document.getElementById("firstName").value);
             formData.append('lastName', document.getElementById("lastName").value);
             formData.append('phone', document.getElementById("phone").value);
+            formData.append('address', document.getElementById("address").value);
             
             // Show loading
             messageDiv.style.display = 'block';

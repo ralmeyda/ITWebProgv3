@@ -13,6 +13,7 @@ require_once 'config.php';
  * @param string $firstName
  * @param string $lastName
  * @param string $phone
+ * @param string $address
  * @return array ['success' => bool, 'message' => string]
  */
 
@@ -20,11 +21,11 @@ function clean($data) {
     return htmlspecialchars(strip_tags(trim($data)));
 }
 
-function registerUser($username, $email, $password, $firstName, $lastName, $phone) {
+function registerUser($username, $email, $password, $firstName, $lastName, $phone, $address) {
     global $conn;
     
     // Validate inputs
-    if (empty($username) || empty($email) || empty($password)) {
+    if (empty($username) || empty($email) || empty($password) || empty($address)) {
         return ['success' => false, 'message' => 'All fields are required'];
     }
     
@@ -47,9 +48,9 @@ function registerUser($username, $email, $password, $firstName, $lastName, $phon
     // Hash password (IMPORTANT)
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     
-    // Insert new user
-    $stmt = $conn->prepare("INSERT INTO users (username, email, password, first_name, last_name, phone) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssss", $username, $email, $hashedPassword, $firstName, $lastName, $phone);
+    // Insert new user (include address)
+    $stmt = $conn->prepare("INSERT INTO users (username, email, password, first_name, last_name, phone, address) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssssss", $username, $email, $hashedPassword, $firstName, $lastName, $phone, $address);
     
     if ($stmt->execute()) {
         return ['success' => true, 'message' => 'Registration successful'];

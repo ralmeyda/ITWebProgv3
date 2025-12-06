@@ -322,7 +322,7 @@ if (isset($_GET['added'])) {
                                 <td><?php echo clean($product['product_name']); ?></td>
                                 <td><?php echo clean($product['category_name']); ?></td>
                                 <td>
-                                    <input type="number" min="0" step="0.01" value="<?php echo number_format($product['price'], 2); ?>"
+                                    <input type="number" min="0" step="0.01" value="<?php echo number_format($product['price'], 2, '.', ''); ?>"
                                         id="price-<?php echo $product['product_id']; ?>"
                                         data-id="<?php echo $product['product_id']; ?>"
                                         class="price-input" style="width:100px; text-align:center;">

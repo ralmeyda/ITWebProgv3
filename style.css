@@ -153,9 +153,13 @@ header a.logo:focus {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap:30px;
 }
+.product-content .product-box{
+    justify-self: start; 
+    max-width: 380px;
+}
 .img-box{
-    width: 250px;   
-    height: 250px;
+    width: 100%;
+    height: 320px;
     overflow: hidden;
     display: flex;
     justify-content: center;
@@ -171,12 +175,12 @@ header a.logo:focus {
 .img-box img{
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain; /* show full image without cropping */
     display: block;
     transition:.3s;
 }
 .img-box:hover img{
-    transform: scale(1.1);
+    transform: scale(1.03);
 }
 .product-row {
     display: flex;
@@ -203,8 +207,9 @@ header a.logo:focus {
 }
 .product-box .price-and-cart{
     display:flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items:center;
+    gap:12px;
 }
 .price-and-cart .price{
     font-size:18px;
@@ -385,6 +390,21 @@ header a.logo:focus {
     text-align: center;
 }
 
+/* Ensure profile edit form buttons are aligned and full width */
+#editProfile form .btn {
+    display: block;
+    width: 100%;
+    margin-left: 0 !important;
+    box-sizing: border-box;
+}
+
+#editProfile form .btn.btn-accept {
+    /* keep accept button styling obvious */
+    background: #e35f26;
+    color: #fff;
+    border: none;
+}
+
 #user-info span {
     color: #fff;
 }
@@ -512,6 +532,81 @@ header a.logo:focus {
 .order-announcement p {
     margin: 5px 0;
     font-size: 14px;
+}
+
+/* Image modal (lightbox) */
+.image-modal{
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.7);
+    z-index: 2000;
+    padding: 20px;
+}
+.image-modal.active{ display: flex; }
+.image-modal-content{
+    max-width: 1200px;
+    width: 100%;
+    max-height: 90vh;
+    background: #fff; /* popup card background */
+    padding: 18px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 20px;
+    position: relative;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+.image-modal-content img{
+    max-width: 75%;
+    max-height: 80vh;
+    border-radius: 6px;
+    object-fit: contain;
+}
+.image-modal-close{
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #fff;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.image-modal-close:focus{ outline: none; }
+
+/* Modal description under the image */
+.image-modal-desc {
+    margin-top: 0;
+    color: #333;
+    font-size: 15px;
+    line-height: 1.4;
+    max-height: 70vh;
+    overflow: auto;
+    width: 320px;
+    flex: 0 0 320px;
+}
+
+@media (max-width: 900px) {
+    .image-modal-content{
+        flex-direction: column;
+        padding: 12px;
+    }
+    .image-modal-content img{
+        max-width: 100%;
+    }
+    .image-modal-desc{
+        width: 100%;
+        flex: none;
+        max-height: 30vh;
+    }
 }
 
 /* Footer styles */

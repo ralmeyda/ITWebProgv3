@@ -5,6 +5,7 @@ require_once 'functions.php';
 <!DOCTYPE html>
 <html>
     <head>
+        <title> CYCRIDE - About Us </title>
         <link rel="stylesheet" href="style.css">
         <link
             href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
@@ -13,7 +14,7 @@ require_once 'functions.php';
     </head>
     <body>
         <header>
-        <a href="home.php" class="logo">Thoto & Nene Fresh Live Tilapia and Bangus</a>
+        <a href="home.php" class="logo">CYCRIDE</a>
         
         <div class="hamburger" id="hamburger">
             <span></span>

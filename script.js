@@ -158,4 +158,52 @@ document.addEventListener("DOMContentLoaded", () => {
       alert(result.message || 'Failed to place order');
     }
   });
+
+  // Image lightbox (open large image when clicking product images)
+  const imageModal = document.getElementById('image-modal');
+  const imageModalImg = document.getElementById('image-modal-img');
+  const imageModalClose = document.getElementById('image-modal-close');
+
+  if (imageModal && imageModalImg) {
+    document.querySelectorAll('.img-box img').forEach(img => {
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('click', (e) => {
+        const src = e.currentTarget.src;
+        if (!src) return;
+        // Ensure modal is appended to document.body so fixed positioning works correctly
+        if (imageModal.parentElement !== document.body) {
+          document.body.appendChild(imageModal);
+        }
+        // fill image
+        imageModalImg.src = src;
+
+        // find related product description (from data attribute on .product-box)
+        const productBox = e.currentTarget.closest('.product-box');
+        const descEl = document.getElementById('image-modal-desc');
+        let desc = '';
+        if (productBox && productBox.dataset && productBox.dataset.description) {
+          desc = productBox.dataset.description || '';
+        }
+        // convert newlines to <br> and set HTML
+        if (descEl) {
+          descEl.innerHTML = desc ? desc.replace(/\n/g, '<br>') : '';
+          descEl.style.display = desc ? 'block' : 'none';
+        }
+
+        imageModal.style.zIndex = 99999;
+        imageModal.classList.add('active');
+        imageModal.setAttribute('aria-hidden', 'false');
+      });
+    });
+
+    function closeImageModal() {
+      imageModal.classList.remove('active');
+      imageModal.setAttribute('aria-hidden', 'true');
+      imageModalImg.src = '';
+    }
+
+    imageModalClose && imageModalClose.addEventListener('click', closeImageModal);
+    imageModal.addEventListener('click', (e) => { if (e.target === imageModal) closeImageModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeImageModal(); });
+  }
 });

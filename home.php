@@ -5,6 +5,7 @@ require_once 'functions.php';
 <!DOCTYPE html>
 <html>
     <head>
+        <title> CYCRIDE - Home </title>
         <link rel="stylesheet" href="style.css">
         <link
             href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
@@ -18,7 +19,7 @@ require_once 'functions.php';
             <span></span>
             <span></span>
         </div>
-        <a href="home.php" class="logo">Thoto & Nene Fresh Live Tilapia and Bangus</a>
+        <a href="home.php" class="logo">CYCRIDE</a>
         <nav class="navbar" id="navbar">
             <a href="home.php">Home</a>
             <a href="index.php">Products</a>
@@ -53,14 +54,14 @@ require_once 'functions.php';
         </div>        
         <h1 style="text-align:center; font-weight:600px; padding-top:45px;"> Products that we offer </h1>
         <section class="brand-logos">
-            <h2>Tilapia </h2>
-            <h2> Bangus</h2>
-            <h2> and many more...</h2>
+            <img src="img/treklogo.jpg" alt="Trek">
+            <img src="img/sworkslogo.jpg" alt="S-Works">
+            <img src="img/cervelologo.png" alt="Cervelo">
+            <img src="img/giantlogo.jpg" alt="Giant">
         </section>
         <div class="buy-now-wrapper">
         <a href="index.php" class="buy-now-btn">Buy Now</a>
         </div>
-
         <script>
         window.APP = {
             isLoggedIn: <?= json_encode(isLoggedIn()); ?>,

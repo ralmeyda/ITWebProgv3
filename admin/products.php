@@ -30,7 +30,7 @@ if (isset($_POST['action']) && ($_POST['action'] === 'add_to_cart' || $_POST['ac
     </head>
     <body>
         <header>
-        <a href="home.php" class="logo">Thoto & Nene Fresh Live Tilapia and Bangus</a>
+        <a href="home.php" class="logo">CYCRIDE</a>
         
         <div class="hamburger" id="hamburger">
             <span></span>

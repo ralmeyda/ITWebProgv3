@@ -2,8 +2,8 @@
 require_once 'config.php';
 require_once 'functions.php';
 
-// Get all active products
-$products = getProducts();
+// Get categories (we'll list products grouped by category)
+$categories = getCategories();
 
 // Get cart count if logged in
 $cartCount = 0;
@@ -49,7 +49,7 @@ if (isLoggedIn()) {
 <header>
 
 
-    <a href="home.php" class="logo">Thoto & Nene Fresh Live Tilapia and Bangus</a>
+    <a href="home.php" class="logo">CYCRIDE</a>
     <div class="hamburger" id="hamburger">
         <span></span><span></span><span></span>
     </div>
@@ -89,34 +89,52 @@ if (isLoggedIn()) {
 
 <section class="shop">
     <h1 class="section-title">Shop Products</h1>
-    <div class="product-content">
-        <?php if (empty($products)): ?>
-            <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
-                <i class="ri-shopping-bag-line" style="font-size: 80px; color: #ddd;"></i>
-                <h2 style="color: #666; margin-top: 20px;">No products available yet</h2>
-                <p style="color: #999;">Admin is adding products. Please check back later!</p>
+    <?php if (empty($categories)): ?>
+        <div style="text-align: center; padding: 60px 20px;">
+            <i class="ri-shopping-bag-line" style="font-size: 80px; color: #ddd;"></i>
+            <h2 style="color: #666; margin-top: 20px;">No categories found</h2>
+            <p style="color: #999;">Please create categories and add products.</p>
+        </div>
+    <?php else: ?>
+        <?php foreach ($categories as $category): ?>
+            <?php $catProducts = getProducts((int)$category['category_id']); ?>
+            <h2 class="section-title" style="font-size:22px; text-align:left; margin-top:30px;"><?= clean($category['category_name']); ?></h2>
+            <div class="product-content">
+                <?php if (empty($catProducts)): ?>
+                    <div style="grid-column: 1/-1; text-align: center; padding: 30px 20px; color:#777;">
+                        <p>No products in this category yet.</p>
+                    </div>
+                <?php else: ?>
+                    <?php foreach ($catProducts as $product): ?>
+                        <div class="product-box" data-product-id="<?= (int)$product['product_id']; ?>" data-description="<?= htmlspecialchars(clean($product['description']), ENT_QUOTES); ?>">
+                            <div class="img-box">
+                                <img src="<?= clean($product['image_url'] ?: 'images/placeholder.jpg'); ?>"
+                                     alt="<?= clean($product['product_name']); ?>">
+                            </div>
+                            <h2 class="product-title"><?= clean($product['product_name']); ?></h2>
+                            <p class="stock-info" style="color:#666; font-size:13px; margin:6px 0 10px;">Stock: <?= (int)$product['stock_quantity']; ?></p>
+                            <div class="price-and-cart">
+                                <p style="font-weight:600;">PHP<?= number_format($product['price'], 0); ?></p>
+                                <span class="price" style="display:none;"><?= $product['price']; ?></span>
+                                <button class="add-cart" title="Add to cart">
+                                    <i class="ri-shopping-bag-line"></i>
+                                </button>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
-        <?php else: ?>
-            <?php foreach ($products as $product): ?>
-                <div class="product-box" data-product-id="<?= (int)$product['product_id']; ?>">
-                    <div class="img-box">
-                        <img src="<?= clean($product['image_url'] ?: 'images/placeholder.jpg'); ?>"
-                             alt="<?= clean($product['product_name']); ?>">
-                    </div>
-                    <h2 class="product-title"><?= clean($product['product_name']); ?></h2>
-                    <p class="product-description"><?= nl2br(clean($product['description'])); ?></p>
-                    <div class="price-and-cart">
-                        <p style="font-weight:600;">PHP<?= number_format($product['price'], 0); ?></p>
-                        <span class="price" style="display:none;"><?= $product['price']; ?></span>
-                        <button class="add-cart" title="Add to cart">
-                            <i class="ri-shopping-bag-line"></i>
-                        </button>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
-    </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
 </section>
+<!-- Image lightbox modal -->
+<div id="image-modal" class="image-modal" aria-hidden="true">
+    <div class="image-modal-content">
+        <button id="image-modal-close" class="image-modal-close" aria-label="Close image">&times;</button>
+        <img id="image-modal-img" src="" alt="Product image">
+        <div class="image-modal-desc" id="image-modal-desc"></div>
+    </div>
+</div>
 <script>
 window.APP = {
     isLoggedIn: <?= json_encode(isLoggedIn()); ?>,
