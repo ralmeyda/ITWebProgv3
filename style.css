@@ -29,12 +29,11 @@ header{
     z-index: 99;
 }
 .hero-image {
-  background-image: url("img/B1.jfif");
+  background-image: url("img/bg.jpg");
   background-color: #cccccc; 
   background-position: center;
   background-repeat: no-repeat; 
   background-size: cover; 
-
 }
 
 .column {

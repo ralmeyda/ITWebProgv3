@@ -44,15 +44,8 @@ require_once 'functions.php';
         </div>
         <h1 style="text-align:center; font-weight:600px; padding-top:35px;"> About Us  </h1>
         <section class="container">
-            <p style="margin-right:260px; padding:25px; padding-left:15%;text-align:center;font-size:25px;"> Thoto & Nene Fresh Live Tilapia and Bangus began as a small family effort that grew out of necessity and opportunity. Before running their stall, the owners—Mr. Thoto and Mrs. Nene—worked different jobs to support their household. Mr. Thoto often helped in transporting fish from suppliers, while Mrs. Nene assisted family members who were already selling in the wet market. Over time, they realized that there was a steady demand for fresh tilapia and bangus in their community, especially among households that preferred freshly harvested fish.
-In 2014, the couple decided to put up their own stall after a relative offered them a small space in Bacoor Public Market. They started with only a few tubs of live tilapia, manually transporting them every morning. </br> </br>As more customers returned because of the quality and freshness of their fish, they gradually expanded their offerings to include bangus and boneless bangus.
-With growing customer trust, their stall became known in the market for providing fresh, affordable fish. This led them to offer phone-in orders and simple delivery services, which helped meet the needs of regular customers who couldn’t visit the market daily. Despite their success, their operations remained traditional—relying on calls, texts, and handwritten notes to manage orders.
-Now, with increasing competition and the shift toward digital buying behaviors, the owners are ready to adapt. Their interest in having a website comes from the desire to organize their orders better, reach more customers, and continue improving their family business.
+            <p style="margin-right:260px; padding:25px; padding-left:15%;text-align:center;font-size:25px;"> Cycride is a modern e-commerce website dedicated to providing high-quality bike frames and essential cycling gear for riders of all levels. Designed with both convenience and performance in mind, the platform offers a wide selection of durable frames, reliable components, and must-have accessories to support every cyclist’s journey—whether for daily commutes, off-road adventures, or competitive riding. With an easy-to-navigate interface, secure checkout, and detailed product information, Cycride ensures a smooth shopping experience that helps customers find the perfect equipment to enhance their ride.
 </p>
-        <h2 style="text-align:center; font-weight:bold; padding-top:35px;">Mission </h2>
-        <p style="margin-right:260px; padding:25px; padding-left:15%;text-align:center;font-size:25px;"> To provide customers with fresh, high-quality fish while supporting sustainable local fishing practices. </p>
-        <h2 style="text-align:center; font-weight:bold; padding-top:35px;"> Vision </h2>
-        <p style="margin-right:260px; padding:25px; padding-left:15%;text-align:center;font-size:25px;"> To deliver freshness and satisfaction to every household through affordable and trustworthy seafood products. </p>
         </section>
         <div class="cart">
             <h2 class="cart-title">Your Cart</h2>
@@ -64,12 +57,6 @@ Now, with increasing competition and the shift toward digital buying behaviors, 
             </div>
             <i class="ri-close-line" id="cart-close"></i>
         </div></br>
-        <div class="location" style="text-align:center; padding-bottom:40px;">
-            <h2 style="font-weight:bold"> Market Location </h2></br>
-            <img src="img/map.png" alt="Market Location">
-            <p style="font-weight:bold;">  Address: Bacoor Public Market, Bacoor, Cavite </br>Stall 101</p>
-        </div>
-
         <script src="script.js"></script>
         <script>
           document.addEventListener('DOMContentLoaded', () => {
