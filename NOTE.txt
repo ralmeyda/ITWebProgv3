@@ -1,0 +1,8 @@
+Task List:
+
+Fix Navigation Bar - Done but need some improvement when it comes to design, it must be consistent to all of the pages.
+Fix Stocks when approved and declined
+Fix hero image - must be smaller, or add a new image to make it look better.
+Fix profile data - Done
+Fix Contact Us, must be in footer
+Fix UI *
