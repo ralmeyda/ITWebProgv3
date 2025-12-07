@@ -75,6 +75,14 @@ if (isLoggedIn()) {
     </div>
 </header>
 
+<?php if (!empty($orderAnnouncements)): ?>
+    <div class="order-announcement" style="padding:12px 9%; background:#fff6e6; border-left:4px solid #f0ad4e; margin-top:70px;">
+        <?php foreach ($orderAnnouncements as $ann): ?>
+            <p style="margin:6px 0;">Order <strong>#<?= (int)$ann['order_id']; ?></strong> has been <strong><?= clean($ann['status']); ?></strong>. (<?= date('Y-m-d H:i', strtotime($ann['created_at'])); ?>)</p>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
+
 <div class="cart">
     <h2 class="cart-title">Your Cart</h2>
     <div class="cart-content"></div>
