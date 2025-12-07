@@ -280,6 +280,9 @@ if (isset($_GET['added'])) {
         <?php if ($successMessage): ?>
             <div class="alert-success"><?php echo $successMessage; ?></div>
         <?php endif; ?>
+        <?php if (isset($_GET['restored'])): ?>
+            <div class="alert-success">Product restored successfully!</div>
+        <?php endif; ?>
 
         <a href="add_product.php" class="btn-add">
             <i class="ri-add-line"></i> Add New Product
@@ -341,19 +344,24 @@ if (isset($_GET['added'])) {
                                 </td>
                                 <td>
                                                     <div class="action-btns">
-                                                        <?php if ($product['is_active']): ?>
-                                                            <!-- Edit Product -->
-                                                            <a href="edit_product.php?id=<?php echo $product['product_id']; ?>" class="btn-edit">Edit
-                                                            </a>
-                                                            <form method="POST" action="delete_product.php" style="display: inline; margin: 0;"
-                                                                  onsubmit="return confirm('Are you sure you want to delete this product?');">
-                                                                <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
-                                                                <button type="submit" class="btn-delete">
-                                                                    Delete
-                                                                </button>
-                                                            </form>
-                                                        <?php else: ?>
-                                                        <?php endif; ?>
+                                                                                <?php if ($product['is_active']): ?>
+                                                                                    <!-- Edit Product -->
+                                                                                    <a href="edit_product.php?id=<?php echo $product['product_id']; ?>" class="btn-edit">Edit
+                                                                                    </a>
+                                                                                    <form method="POST" action="delete_product.php" style="display: inline; margin: 0;"
+                                                                                          onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                                                                        <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
+                                                                                        <button type="submit" class="btn-delete">
+                                                                                            Delete
+                                                                                        </button>
+                                                                                    </form>
+                                                                                <?php else: ?>
+                                                                                    <!-- Inactive product: offer restore -->
+                                                                                    <form method="POST" action="restore_product.php" style="display:inline; margin:0;">
+                                                                                        <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
+                                                                                        <button type="submit" class="btn-restore" onclick="return confirm('Restore this product to active listing?');">Restore</button>
+                                                                                    </form>
+                                                                                <?php endif; ?>
                                                     </div>
                                     <div class="update-msg" id="msg-<?php echo $product['product_id']; ?>" style="display:none; margin-top:6px; font-size:13px;"></div>
                                 </td>
