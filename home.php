@@ -52,7 +52,8 @@ require_once 'functions.php';
         <div id="cart-notification">Product added to cart!</div>
         <div class="hero-image" style="height:650px; width:100%; background-color:#cccccc; display:flex; justify-content:center; align-items:center; font-size:30px; font-weight:bold; color:#333;border-bottom:3px solid rgb(255, 40, 40);">
         </div>        
-        <h1 style="text-align:center; font-weight:600px; padding-top:45px;"> Products that we offer </h1>
+        <h1 style="text-align:center; font-weight:600px; padding-top:45px;"> Welcome to <strong>CYCRIDE</strong> your one stop shop ride </h1>
+        <h2 style="text-align:center; font-weight:600px; padding-top:45px;"> Products that we offer </h2>
         <section class="brand-logos">
             <img src="img/treklogo.jpg" alt="Trek">
             <img src="img/sworkslogo.jpg" alt="S-Works">
